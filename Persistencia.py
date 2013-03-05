@@ -2,13 +2,15 @@
 import math
 from Passageiro import Passageiro
 from GerentePassageiros import GerentePassageiros
+from GerentePassageirosTeste import GerentePassageirosTeste
+
 import os
 
-M = 200
+M = 10
 
-def gravarArquivo(ranking):
-	arquivo = open("Ranking.dat", "wb")
-	arquivo.write(ranking)
+def gravarArquivo(dados):
+	arquivo = open("resultadoDoPrograma.dat", "wb")
+	arquivo.write(dados)
 	arquivo.close()
 	
 def calculaDistancia (x1, x2, y1, y2):
@@ -16,47 +18,87 @@ def calculaDistancia (x1, x2, y1, y2):
 	x2 = float (x2)
 	y1 = float (y1)
 	y2 = float (y2)
-	print ("---------")
-	print x1 , y1, x2, y2
 	return math.sqrt( ((x2-x1)**2 ) + (y2-y1)**2)
+
+def lerArquivo(var):
+	if (os.path.isfile(var)):
+		arquivo = open(var)
+		lista =  arquivo.readlines()
+		arquivo.close()
+		return lista
+	return []
+
+
+#lendo dados de treinamento
+dadosTreinamento =GerentePassageiros ("treinamento.csv")
+
+
+
+# Lendo dados de teste 
+dadosASeremCompletados = GerentePassageirosTeste("teste.csv")
+print ("---------aqui a quantidade de dados -----------")
+print len (dadosASeremCompletados.getLista())
+
+listaSaida = []
+listaDistancias = []
+saida = ""
+
+#iniciando computação de dados 
+for passageiroIncompleto in dadosASeremCompletados.getLista():
+	listaDistancias = []
+	for passageiroDeTreinamento in dadosTreinamento.getLista():
+		#remove passageiros incompletos
+		if (passageiroDeTreinamento.idade == "" or passageiroDeTreinamento.pclass == "" or passageiroDeTreinamento.tarifa == ""): continue   
+		if (passageiroIncompleto.idade == ""):
+			passageiroIncompleto.idade = 25
+		if (passageiroIncompleto.pclass == "" ):
+			passageiroInconpleto.pclass = 2
+		if (passageiroIncompleto.tarifa == ""):
+			passageiroIncompleto.tarifa = 7.25
+		#print passageiroIncompleto.nome ," - ",passageiroDeTreinamento.nome
+
+		listaDistancias.append ((calculaDistancia (float (passageiroIncompleto.pclass), float (passageiroDeTreinamento.pclass), float (passageiroIncompleto.tarifa),float ( passageiroDeTreinamento.tarifa)), passageiroDeTreinamento.nome))
 	
+	listaDosM = []
+	passageirosSobreviveram = 0
+	passageirosNaoSobreviveram = 0
+	#separar os M dados da distancia
+	listaDistancias.sort()
 
-#teste = Passageiro("",3,"O'Sullivan"," Miss. Bridget Mary","female",100,0,0,330909,7.6292,"","Q")
-teste = Passageiro("",2,"Quick, ","Mrs. Frederick Charles (Jane Richards)","female",33,0,2,26360,26,"","S")
+	if M <= len (listaDistancias):
+		for i in range (0,M):
+			listaDosM.append (listaDistancias[i])
+	#listaDosM.sort()
 
-lista = []
-x =GerentePassageiros ("treinamento.csv")
+	
+	#verificar quantidade de passageiros que sobreviveram e que não sobreviveram
+	for passageiroDosM in listaDosM:
+		for passageiro in dadosTreinamento.getLista():
+			if (passageiro.nome == passageiroDosM[1]):
+				if (int (passageiro.sobreviveu) == 1):
+					passageirosSobreviveram = passageirosSobreviveram + 1
+				elif(int (passageiro.sobreviveu) == 0): 
+					passageirosNaoSobreviveram = passageirosNaoSobreviveram + 1
+				break
+	
+	sobreviveu = 100
+	if (passageirosNaoSobreviveram >passageirosSobreviveram ):
+		sobreviveu = 0
+	else:
+		sobreviveu = 1
 
-for i in x.getLista():
-	if (i.idade == "" or i.pclass == "" or i.tarifa == ""): continue   
-	lista.append ((calculaDistancia (float (teste.idade), float (teste.tarifa), float (i.idade),float ( i.tarifa)), i.nome))
+	saida += str(sobreviveu)+"\n"
+	listaSaida.append((passageiroIncompleto.nome , sobreviveu))
 
 
 	
+gravarArquivo (saida)
+dadosReais = lerArquivo ("resposta.txt")
+dadosArtificiais = lerArquivo ("resultadoDoPrograma.dat")
 
-#lista.sort()
-listaDosM = []
+contadorAcertos = 0
+for i in range (0, len(dadosReais)):
+	if dadosArtificiais[i] == dadosReais[i]:
+		contadorAcertos += 1
 
-for i in lista:
-	print i[0]
-
-passageirosSobreviveram = 0
-passageirosNaoSobreviveram = 0
-print "-------o lista dos M o-------"
-for i in range (0,M):
-	listaDosM.append (lista[i])
-	print lista[i]
-
-	
-#verificar quantidade de passageiros que sobreviveram e que não sobreviveram
-for i in listaDosM:
-	for passageiro in x.getLista():
-		if (passageiro.nome == i[1]):
-			if (int (passageiro.sobreviveu) == 1):
-				passageirosSobreviveram = passageirosSobreviveram + 1
-			elif(int (passageiro.sobreviveu) == 0): 
-				passageirosNaoSobreviveram = passageirosNaoSobreviveram + 1
-			break
-
-print ("passageiros que não sobreviveram = ",passageirosNaoSobreviveram)
-print ("passageiros que sobreviveram = ",passageirosSobreviveram)
+print ("proporcao de acertos:  ", "%.2f"%(100.0*(float(contadorAcertos)/float(len(dadosReais)))), " %")

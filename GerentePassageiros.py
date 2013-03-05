@@ -9,6 +9,8 @@ class GerentePassageiros(object):
 			arquivo = open(var)
 			lista =  arquivo.readlines()
 			arquivo.close()
+			print ("tamanho da lista no ler arquvo ")
+			print len (lista)
 			return lista
 		return []
 
@@ -16,7 +18,13 @@ class GerentePassageiros(object):
 		if (a[1] == b[1]):
 			return (-1) * cmp(a[0], b[0])
 		return cmp(a[1], b[1])
-	
+
+	def criarObjetosNaLista(self,lista):
+		listaPassageiros = []
+		for i in lista:
+			listaPassageiros.append(Passageiro(i[0],i[1], i[2],i[3], i[4], i[5],i[6],i[7],i[8],i[9],i[10],i[11] ))
+		return listaPassageiros
+		
 	def organizarDados(self, dados):
 		cont = 0 		
 		dadosSplit =[]
@@ -27,16 +35,28 @@ class GerentePassageiros(object):
 				pass
 			dadosSplit.append(i.split(","))
 		
+		print ("tamanho dos dados split")
+		print (len (dadosSplit))
+		
+		
 		listaPassageirosSplit = []
 		for i in dadosSplit:
-			if ((i[0] == "0" )or( i[0]=="1")):
-				listaPassageirosSplit.append(i)
-
+			if ((i[0] == "survived")):#"0" )or( i[0]=="1")):
+				continue
+			listaPassageirosSplit.append(i)
+		
+		print ("===== tamanh da lista de passageiros ======")
+		print (len (listaPassageirosSplit))
 		#cria objetos
 		listaPassageiros = []
-		for i in listaPassageirosSplit:
-			listaPassageiros.append(Passageiro(i[0],i[1], i[2],i[3], i[4], i[5],i[6],i[7],i[8],i[9],i[10],i[11] ))
+		listaPassageiros = self.criarObjetosNaLista(listaPassageirosSplit)
+		
+		print ("quantidade de passageiros no organizar dados")
+		print len ((listaPassageiros))
+		print len((dados))
 		return listaPassageiros
+
+
 		
 	def __init__ (self, endereco):
 		self.endereco = endereco

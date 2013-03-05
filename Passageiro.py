@@ -3,7 +3,7 @@
 class Passageiro(object):
 	def __init__ (self, Ssobreviveu, Spclass, Snome, Ssobrenome, Ssexo, Sidade, SirmaosEsposa, SpaisFilhos, Sticket, Starifa, Scabine, Sembarque):
 		self.sobreviveu = Ssobreviveu
-		self.pclass = Spclass
+		self.pclass = int (Spclass)
 		self.nome = Snome + Ssobrenome
 		self.sexo = Ssexo
 		self.idade = Sidade
@@ -13,3 +13,5 @@ class Passageiro(object):
 		self.tarifa = Starifa
 		self.cabine = Scabine
 		self.embarque = Sembarque
+
+		
