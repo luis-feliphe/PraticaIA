@@ -3,10 +3,41 @@ import math
 from Passageiro import Passageiro
 from GerentePassageiros import GerentePassageiros
 from GerentePassageirosTeste import GerentePassageirosTeste
-
 import os
 
-M = 10
+#############################
+##Luís Feliphe Silva Costa ##
+##luis.feliphe@dce.ufpb.br ##
+#############################
+
+
+
+#####################      Variaveis      #####################
+##															 ##
+##M é o valor de vizionhos mais proximos que serão comparados##
+M = 5														 ##
+##															 ##
+##TIPO é a forma que ele vai comparar os dados				 ##
+##TIPO = 1 => classe x tarifa								 ##
+##TIPO = 2 => classe x idade								 ##
+##TIPO = 3 => tarifa x idade								 ##
+TIPO = 1													 ##
+##															 ##
+###############################################################
+
+
+
+print "o====================o Dados do Algoritmo o=====================o\n|\t\t\t\t\t\t\t\t|\n|\t\t\t\t\t\t\t\t|"
+print "|O  algoritmo vai utilizar M (numero de vizinhos) = ", M, "\t|\n|\t\t\t\t\t\t\t\t|\n|\t\t\t\t\t\t\t\t|"
+if (TIPO == 1):
+	print "| O algoritmo vai comparar classe x tarifa \t\t\t|\n|\t\t\t\t\t\t\t\t|"
+if (TIPO == 2):
+	print "| O algoritmo vai comparar classe x  idade \t\t\t|\n|\t\t\t\t\t\t\t\t|"
+if (TIPO == 3):
+	print "| O algoritmo vai comparar tarifa x  idade \t\t\t|\n|\t\t\t\t\t\t\t\t|"
+print "o===============================================================o\n\n\n"
+
+
 
 def gravarArquivo(dados):
 	arquivo = open("resultadoDoPrograma.dat", "wb")
@@ -36,8 +67,6 @@ dadosTreinamento =GerentePassageiros ("treinamento.csv")
 
 # Lendo dados de teste 
 dadosASeremCompletados = GerentePassageirosTeste("teste.csv")
-print ("---------aqui a quantidade de dados -----------")
-print len (dadosASeremCompletados.getLista())
 
 listaSaida = []
 listaDistancias = []
@@ -49,16 +78,19 @@ for passageiroIncompleto in dadosASeremCompletados.getLista():
 	for passageiroDeTreinamento in dadosTreinamento.getLista():
 		#remove passageiros incompletos
 		if (passageiroDeTreinamento.idade == "" or passageiroDeTreinamento.pclass == "" or passageiroDeTreinamento.tarifa == ""): continue   
+		# no caso abaixo, decidi colocar um valor padrão nos dados vazios
 		if (passageiroIncompleto.idade == ""):
 			passageiroIncompleto.idade = 25
 		if (passageiroIncompleto.pclass == "" ):
 			passageiroInconpleto.pclass = 2
 		if (passageiroIncompleto.tarifa == ""):
 			passageiroIncompleto.tarifa = 7.25
-		#print passageiroIncompleto.nome ," - ",passageiroDeTreinamento.nome
-
-		listaDistancias.append ((calculaDistancia (float (passageiroIncompleto.pclass), float (passageiroDeTreinamento.pclass), float (passageiroIncompleto.tarifa),float ( passageiroDeTreinamento.tarifa)), passageiroDeTreinamento.nome))
-	
+		if (TIPO == 1):
+			listaDistancias.append ((calculaDistancia (float (passageiroIncompleto.pclass), float (passageiroDeTreinamento.pclass), float (passageiroIncompleto.tarifa),float ( passageiroDeTreinamento.tarifa)), passageiroDeTreinamento.nome))
+		if (TIPO == 2):
+			listaDistancias.append ((calculaDistancia (float (passageiroIncompleto.pclass), float (passageiroDeTreinamento.pclass), float (passageiroIncompleto.idade),float ( passageiroDeTreinamento.idade)), passageiroDeTreinamento.nome))
+		if (TIPO == 3):
+			listaDistancias.append ((calculaDistancia (float (passageiroIncompleto.tarifa), float (passageiroDeTreinamento.tarifa), float (passageiroIncompleto.idade),float ( passageiroDeTreinamento.idade)), passageiroDeTreinamento.nome))
 	listaDosM = []
 	passageirosSobreviveram = 0
 	passageirosNaoSobreviveram = 0
@@ -101,4 +133,4 @@ for i in range (0, len(dadosReais)):
 	if dadosArtificiais[i] == dadosReais[i]:
 		contadorAcertos += 1
 
-print ("proporcao de acertos:  ", "%.2f"%(100.0*(float(contadorAcertos)/float(len(dadosReais)))), " %")
+print "PROPORCAO DE ACERTOS COMPARANDO COM O ARQUIVO:  ", "%.2f"%(100.0*(float(contadorAcertos)/float(len(dadosReais)))), "%\n\n"

@@ -9,8 +9,6 @@ class GerentePassageiros(object):
 			arquivo = open(var)
 			lista =  arquivo.readlines()
 			arquivo.close()
-			print ("tamanho da lista no ler arquvo ")
-			print len (lista)
 			return lista
 		return []
 
@@ -35,8 +33,6 @@ class GerentePassageiros(object):
 				pass
 			dadosSplit.append(i.split(","))
 		
-		print ("tamanho dos dados split")
-		print (len (dadosSplit))
 		
 		
 		listaPassageirosSplit = []
@@ -45,15 +41,9 @@ class GerentePassageiros(object):
 				continue
 			listaPassageirosSplit.append(i)
 		
-		print ("===== tamanh da lista de passageiros ======")
-		print (len (listaPassageirosSplit))
 		#cria objetos
 		listaPassageiros = []
 		listaPassageiros = self.criarObjetosNaLista(listaPassageirosSplit)
-		
-		print ("quantidade de passageiros no organizar dados")
-		print len ((listaPassageiros))
-		print len((dados))
 		return listaPassageiros
 
 
